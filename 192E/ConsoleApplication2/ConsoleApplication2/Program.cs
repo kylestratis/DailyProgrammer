@@ -22,17 +22,19 @@ namespace DailyProgrammer_192E {
                 numbers.Add(number);
             }
 
-            // Get carry values only. TODO: Fix and finish obtaining carry values, then write actual addition. 
-            // Carry values are for display only.
-            for (int i = 1; i < numbers.Count; i++)
+            // For each number in numbers, call numSplit. Then equalize size of results. 
+        }
+
+        public static List<int> numSplit(int number)
+        {
+            var splitNum = new List<int>();
+            while (number > 0)
             {
-                carrySum += numbers[i].Last();
+                splitNum.Add(number % 10);
+                number /= 10;
             }
-
-            carry = carrySum % 10;
-
-
-    
+            splitNum.Reverse();
+            return splitNum;
 
         }
     }
