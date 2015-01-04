@@ -13,7 +13,7 @@ namespace dptools
         private const string LongBlock = "##############################################################\n";
         private const string TwoColumnBlock = "########                                              ########\n";
         private const string SingleColumnBlock = "########";
-        private List<String> _introList; //also implement public accessors with getters for display
+        private List<String> _introList; //also implement public properties with getters for display
 
         
         #endregion
@@ -26,7 +26,7 @@ namespace dptools
 
         public MenuBuilder(string fileName)
         {
-            //TODO: Implement FileRead private method
+            //TODO: Implement FileRead private method, and then the *BUILD private methods,
         }
         
 
@@ -67,8 +67,7 @@ namespace dptools
             int authorIndex = Array.IndexOf(fileContent, "@@AUTHOR:@@");
             int instructionIndex = Array.IndexOf(fileContent, "@@INSTRUCTIONS:@@");
             int menuIndex = Array.IndexOf(fileContent, "@@MENU:@@");
-            if (authorIndex - programIndex == 2 && fileContent[1].Length < 33)
-                // programIndex should be 0, authorIndex should be 2, and the filename should be under 33 characters
+            if (authorIndex - programIndex == 2 && fileContent[programIndex + 1].Length < 33 && fileContent[authorIndex + 1].Length < 37)
                 IntroBuild(fileContent, programIndex, authorIndex);
             else
                 throw new ArgumentException("More than one line for program name or name too long");
@@ -80,9 +79,24 @@ namespace dptools
         // Void because it will put the data in the declared _introList variable
         private void IntroBuild(string [] content, int startIndex, int endIndex)
         {
-            int whitespace = 32 - content[1].Length;
-            string spaces = new String(' ', whitespace);
-            // YOU ARE HERE
+            int nameWhitespace = 32 - content[startIndex + 1].Length;
+            int authorWhitespace = 40 - content[endIndex + 1].Length;
+            string nameSpaces = new String(' ', nameWhitespace);
+            string authorSpaces = new String(' ', authorWhitespace);
+            StringBuilder introSB = new StringBuilder();
+
+            string programLine = introSB.AppendFormat("{0} Welcome to {1}{2} {0}", SingleColumnBlock, content[startIndex + 1], nameSpaces).ToString();
+            introSB.Clear();
+            string authorLine = introSB.AppendFormat("{0} {1} By: {2} {0}", SingleColumnBlock, authorSpaces, content[endIndex + 1]).ToString();
+
+            if (_introList.Any())
+            {
+                _introList.Clear();
+            }
+            _introList.Add(Statements("open");
+            _introList.Add(programLine);
+            _introList.Add(authorLine);
+            _introList.Add(Statements("close");
         }
 
         // To construct the invariant parts of the menu.
