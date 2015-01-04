@@ -93,10 +93,10 @@ namespace dptools
             {
                 _introList.Clear();
             }
-            _introList.Add(Statements("open");
+            _introList.Add(Statements("open"));
             _introList.Add(programLine);
             _introList.Add(authorLine);
-            _introList.Add(Statements("close");
+            _introList.Add(Statements("close"));
         }
 
         // To construct the invariant parts of the menu.
