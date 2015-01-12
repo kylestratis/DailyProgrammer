@@ -13,8 +13,19 @@ namespace dptools
         private const string LongBlock = "##############################################################\n";
         private const string TwoColumnBlock = "########                                              ########\n";
         private const string SingleColumnBlock = "########";
-        private List<String> _introList; //also implement public properties with getters for display
 
+
+        private List<String> _introList; //also implement public properties with getters for display
+        public List<String> IntroList
+        {
+            get { return _introList; }
+        }
+
+        private List<String> _instructList;
+        public List<String> InstructList
+        {
+            get { return _instructList; }
+        }
         
         #endregion
 
@@ -59,7 +70,7 @@ namespace dptools
         #endregion
 
         #region private methods
-        //1. Whole file read into string array (each line)
+        //This will create the lists for each part of the menu. Then call a display method to show them.
         private void FileRead(string fileName)
         {
             string [] fileContent = System.IO.File.ReadAllLines(fileName);
@@ -71,6 +82,7 @@ namespace dptools
                 IntroBuild(fileContent, programIndex, authorIndex);
             else
                 throw new ArgumentException("More than one line for program name or name too long");
+            InstructBuild(fileContent, instructionIndex, menuIndex);
 
 
 
@@ -97,6 +109,47 @@ namespace dptools
             _introList.Add(programLine);
             _introList.Add(authorLine);
             _introList.Add(Statements("close"));
+        }
+
+        //update this eventually to break at whole words
+        private void InstructBuild(string[] content, int startIndex, int endIndex)
+        {
+            int instructWhitespace = 31;
+            string instructSpaces = new String(' ', instructWhitespace);
+            string instructBodyLine;
+            StringBuilder instructSB = new StringBuilder();
+
+            string instructLine = instructSB.AppendFormat("{0} Instructions:{1} {0}", SingleColumnBlock, instructSpaces).ToString();
+            instructSB.Clear();
+
+            if (_instructList.Any())
+            {
+                _instructList.Clear();
+            }
+
+            _instructList.Add(Statements("open"));
+            _instructList.Add(instructLine);
+            // TODO: This is wrong. content.Length should instead be restricted to the start and end indices supplied to the method. 
+            for(int i = 0; i < content.Length; i++)
+            {
+                instructSB.Append(content[i]);
+                if(i % 44 == 0)
+                {
+                    instructBodyLine = instructSB.ToString();
+                    instructSB.Clear();
+                    string instructBodyFullLine = instructSB.AppendFormat("{0} {1} {0}", SingleColumnBlock, instructBodyLine).ToString();
+                    _instructList.Add(instructBodyFullLine);
+                }
+                if(i == content.Length - 1)
+                {
+                    instructBodyLine = instructSB.ToString();
+                    instructSB.Clear();
+                    int endSpace = 44 - instructBodyLine.Length;
+                    string endWhitespace = new string(' ', endSpace);
+                    string instructEndLine = instructSB.AppendFormat("{0} {1}{2} {0}", SingleColumnBlock, instructBodyLine, endWhitespace).ToString();
+                }
+            }
+            _instructList.Add(Statements("close"));
         }
 
         // To construct the invariant parts of the menu.
